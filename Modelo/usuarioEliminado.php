@@ -6,7 +6,7 @@ require_once("../Modelo/lib/nusoap.php");
 
 $cadena = array($_SESSION['usuario'], $_SESSION['password'], $_POST['usuario']);
 
-$cliente = new nusoap_client("http://localhost:8888/sacfinals/Controlador/servicio.php",false);
+$cliente = new nusoap_client($server_url."/Controlador/servicio.php",false);
 $respuesta = $cliente->call("eliminar",array('datos' => $cadena,'servidor' => $host,'puerto' => $port,'baseAdmin'=>$baseAdmin));
 $manage = json_decode($respuesta, true);
 echo $manage['token'];

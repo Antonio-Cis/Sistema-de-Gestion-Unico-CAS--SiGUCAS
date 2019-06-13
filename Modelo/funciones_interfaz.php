@@ -50,9 +50,17 @@ function html_auth_header($nombre, $apellido){
         //</h4>
       //  <br/>
     //</div>
-                'Bienvenido: '.$nombre . " " . $apellido.' <a style="color: #245580; font-weight: bold" href="../Modelo/cerrar.php">
-                  [ Cerrar sesión ]
-                  ';
+    //<div class="limiter-header">
+       // <br/>
+       // '<h4 class="page-title">
+           // '<span class="pull-right" style="color: white; padding: 5px; font-size: 12px">
+                'Bienvenido: '.$nombre . " " . $apellido.' <a style="color: #e1ca79; font-weight: bold" href="../Modelo/cerrar.php">
+                    [ Cerrar sesión ]
+                </a>';
+            //</span>
+        //</h4>
+        //<br/>
+    //</div>
 
     return $texto;
 }

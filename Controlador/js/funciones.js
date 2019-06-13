@@ -3,11 +3,12 @@ $(document).ready(function(){
 		page =1;
 		$('#tabla').load('../Modelo/tablausr.php?id1='+selec);
 		vin = 0;
+		user = "";
 	});
 
 $(function() {
   // elementos de la lista
-	var enlace = "http://localhost/sacfinals/";
+	var enlace = "http://localhost/SiGUCAS";
   	var menues = $(".nav li");
 
   	menues.click(function() {
@@ -168,9 +169,9 @@ function autenticarUsuario(nombre,pasword){
 						alertify.error("Los datos ingresados son incorrectos");
 					}else{
 						if (datos==2) {
-							location.href ="http://localhost:8888/sacfinals/Vista/perfilUsuario.php";
+							location.href = server_url + "/Vista/perfilUsuario.php";
 						}else if(datos==1){
-							location.href ="http://localhost:8888/sacfinals/Vista/indexusuario.php";
+							location.href = server_url + "/Vista/indexusuario.php";
 						}
 					}
 				}
@@ -180,6 +181,8 @@ function autenticarUsuario(nombre,pasword){
 
 //MÉTODO PARA ACTUALIZAR LA CONTRASEÑA
 function actualizar_password(paswordactual,paswordnueva,paswordnueva1){
+event.preventDefault();
+$("#cargando").css("display", "inline");
 	cadena = 	"passwordActual=" + paswordactual +
 						"&passwordNueva=" + paswordnueva +
 						"&passwordNueva2=" + paswordnueva1;
@@ -190,19 +193,24 @@ function actualizar_password(paswordactual,paswordnueva,paswordnueva1){
 			success:function(datos){
 				if(datos==0){
 					alertify.error("No se estableció la conexión con el servidor");
+								$("#cargando").css("display", "none");
 				}else{
 					if(datos==1){
 						alertify.error("Ingrese correctamente su contraseña actual");
+								$("#cargando").css("display", "none");
 					}else{
 						if(datos==2){
 							alertify.error("Su nueva contraseña no coincide");
+								$("#cargando").css("display", "none");
 						}else{
-							if(datos==4){
-								alert("Su contraseña se actualizo con éxito, vuelva a iniciar sesión");
-								//Cambiar dirección dependiendo el servidor
-								window.location.href=enlace;
+							if(datos==3){
+								alertify.error("Su comtraseña no puede ser su número de identificación");
+								$("#cargando").css("display", "none");
 							}else{
-							alertify.error("Error, no sé actualizo su contraseña");
+							alert("Su contraseña se actualizo con éxito, vuelva a iniciar sesión");
+								//Cambiar dirección dependiendo el servidor
+								$("#cargando").css("display", "none");
+								window.location.href = server_url+"/Modelo/cerrar.php";
 							}
 						}
 					}
@@ -277,16 +285,16 @@ $(document).ready(function(){
 										$("#usuarionuevo").css("display", "inline");
 
 	          			}else{
-	            			alertify.alert('la cedula:' + cedula + ' es incorrecta');
+	            			alertify.alert('la cédula:' + cedula + ' es incorrecta');
 	          			}
 
 	        		}else{
 	          		// imprimimos en consola si la region no pertenece
-	          		alertify.alert('Esta cedula no pertenece a ninguna region');
+	          		alertify.alert('Esta cédula no pertenece a ninguna región');
 	        		}
      				}else{
         		//imprimimos en consola si la cedula tiene mas o menos de 10 digitos
-        		alertify.alert('Esta cedula tiene menos de 10 Digitos');
+        		alertify.alert('Esta cédula tiene menos de 10 Dígitos');
      				}
 					}
   });
@@ -407,6 +415,8 @@ function eliminartodos(){
 
 //MÉTODO PARA ENVIAR LAS INDICACIONES DE RESTABLECER LA CONTRASEÑA 1
 function restablecerContra1(){
+	event.preventDefault();
+	$("#cargando").css("display", "inline");
 	cedula = $('#cedula').val();
 	usuario = $('#usuario').val();
 	cadena = "dni=" + cedula +
@@ -418,15 +428,19 @@ function restablecerContra1(){
 			success:function(datos){
 				if(datos==0){
 					alertify.error("No se estableció la conexión con el servidor");
+							$("#cargando").css("display", "none");
 				}else{
 					if(datos==1){
 						alertify.error("El usuario o correo que ingreso es incorrecto");
+							$("#cargando").css("display", "none");
 					}else{
 						if(datos==2){
 							alertify.error("La cédula que ingreso es incorrecta");
+							$("#cargando").css("display", "none");
 						}else{
-							alert("Por favor revise las instrucciones enviadas a su correo "+datos);
-							window.location.href=(server_url);
+							alert("Por favor revise las instrucciones enviadas a su correo: "+ datos);
+							$("#cargando").css("display", "none");
+							window.location.href = server_url;
 						}
 					}
 				}
@@ -436,6 +450,10 @@ function restablecerContra1(){
 
 //MÉTODO PARA RESTABLECER LA CONTRASEÑA
 function restableceContrasenia(datos){
+event.preventDefault();
+	$("#restablecercontra").css("display", "inline");
+var v = $('#frmPassword').valid();
+   if (v) {
 	var passwordnueva = $('#passwordnueva').val();
 	var passwordnueva1 = $('#passwordnueva1').val();
 	cadena = "passN=" + passwordnueva +
@@ -448,18 +466,22 @@ function restableceContrasenia(datos){
 			success:function(datos){
 				if(datos==0){
 					alertify.error("No se estableció la conexión con el servidor");
+							$("#restablecercontra").css("display", "none");
 				}else{
 					if (datos==1) {
 						alertify.error("Error, la contraseña no coincide");
+							$("#restablecercontra").css("display", "none");
 					}else{
 						if(datos==2){
 							alert("La contraseñia se cambio con éxito");
+							$("#restablecercontra").css("display", "none");
 							window.location.href=server_url;
 						}
 					}
 				}
 			}
 		});
+    }
 }
 
 //MÉTODO PARA ELIMINAR UN USUARIO
@@ -489,12 +511,28 @@ function eliminarusuario(datos){
 //EVENTO PARA CAPTURAR EL EVENTO DE CLICK
 $(document).ready(function(){
 	$('#actualizar_contra').click(function(){
+	var v = $('#frmPassword').valid();
+   if (v) {
 	  paswordactual = $('#passwordactual').val();
 	  paswordnueva = $('#passwordnueva').val();
 	  paswordnueva1= $('#passwordnueva1').val();
-		actualizar_password(paswordactual,paswordnueva,paswordnueva1);
-	});
+	actualizar_password(paswordactual,paswordnueva,paswordnueva1);
+   }
 });
+
+    $.validator.addClassRules({
+        password: {
+            notEqualActual: ".passwordactual",
+        },
+    });
+    $.validator.addMethod("notEqualActual",
+            function (value, element, param) {
+                return value !== $(param).val();
+            },
+            "Escriba una contraseña diferente a la actual");
+
+});
+
 
 //MÉTODO PARA AGREGAR LOS DATOS
 function agregardatos(datos,selec){
@@ -505,6 +543,7 @@ function agregardatos(datos,selec){
 	$('#correoa').val(d[3]);
 	$('#telefonoa').val(d[4]);
 	$('input:radio[name="grupoa"]').filter('[value="'+selec+'"]').attr('checked', true);
+	user = d[5];
 }
 
 //MÉTODO PARA CARGAR USUARIOS
@@ -790,6 +829,7 @@ function actualizar(cedula,nombre,apellido,correo,telefono,contrasena,grupo){
 						"&correo=" + correo +
 						"&telefono=" + telefono +
 						"&contrasenia=" + contrasena +
+						"&user=" + user +
 						"&tipoU=" + grupo;
 		$.ajax({
 			type:"POST",

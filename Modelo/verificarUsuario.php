@@ -27,7 +27,7 @@ require_once("../Modelo/lib/nusoap.php");
                  $token = 1;
                  session_start();
                  	$_SESSION['usuario']=$nombres;
-					$_SESSION['password']=$password;
+			$_SESSION['password']=$password;
                    echo $token;
             }
     }else{

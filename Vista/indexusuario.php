@@ -3,8 +3,8 @@
 require_once("../Modelo/config.php");
 require_once("../Modelo/funciones_interfaz.php");
 session_start();
-$usuario =$_SESSION['usuario'];
-$correo = $_SESSION['correo'];
+@$usuario =$_SESSION['usuario'];
+@$correo = $_SESSION['correo'];
 
 if (empty($usuario)){
   header ("Location: ../index.php");
@@ -228,8 +228,8 @@ if (empty($usuario)){
     </div>
   </fieldset>
       </div>
-			<div id="usuarionuevo" style="display:none; color:green;"><center>Cargando...</center></div>
-			<br>
+	<div id="usuarionuevo" style="display:none; color:green;"><center>Cargando...</center></div>
+	<br>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-primary"  id="guardar" >Guardar</button>

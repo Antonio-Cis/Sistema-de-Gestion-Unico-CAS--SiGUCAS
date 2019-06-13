@@ -6,7 +6,7 @@ require_once('Modelo/config.php');
 <html lang="en">
 <head>
 
-	<title>Inicio de sesión SAC</title>
+	<title>Sistema de Administración Único CAS</title>
 	    <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	    <meta name="viewport" content="width=device-width, initial-scale=1">

@@ -1,16 +1,12 @@
 <?php
 
-require_once('Modelo/config.php');
-require_once("Modelo/lib/nusoap.php");
-
-$casService = 'https://192.168.1.2:8443/cas';
-$thisService = 'http://localhost:8888/sacfinals/vistaLogin.php';
+require_once('config.php');
+require_once("lib/nusoap.php");
 
 
-if ($_SERVER["REQUEST_METHOD"] && $_GET["ticket"]) {
+if (@$_SERVER["REQUEST_METHOD"] && @$_GET["ticket"]) {
    if ($response = responseForTicket($_GET["ticket"])) {
       if ($uid = uid($response)) {
-        echo $uid;
          if(autenticar($uid)==1){
           echo "Sesión con éxito";
           header ("Location: Vista/perfilUsuario.php");
@@ -30,7 +26,7 @@ else {
   if($_GET['cas']=="noCas"){
 
   }else{
-   header("Location: $casService/login?service=$thisService");
+   header("Location: $cas_url/login?service=$server_url/vistaLogin.php");
   }
 }
  
@@ -49,7 +45,6 @@ else {
       $filtro = "uid=$uid";
         $arreglo = array("uid","sn", "givenName", "mail","userpassword");
         $resultado = @ldap_search($conectar, $baseGeneral, $filtro, $arreglo);
-
       $entrada = ldap_get_entries($conectar, $resultado);
       $valor = ldap_count_entries($conectar, $resultado);
             for ($i=0; $i<$entrada["count"]; $i++){
@@ -61,7 +56,7 @@ else {
                $token =1;
 
                  session_start();
-                $_SESSION['usuario']=$correo;
+                $_SESSION['usuario']=$usuario;
                 $_SESSION['password']=$password;
                 $_SESSION['nombre']=$nombre;
                 $_SESSION['apellido']=$apellido;
@@ -79,16 +74,17 @@ return $token;
 * Returns the CAS response if the ticket is valid, and false if not.
 */
 function responseForTicket($ticket) {
+  global $cas_url;
+  global $server_url;
+  
   $arrContextOptions=array(
     "ssl"=>array(
         "verify_peer"=>false,
         "verify_peer_name"=>false,
     ),
 ); 
-   global $casService;
-   global $thisService;
  
-   $casGet = "$casService/serviceValidate?ticket=$ticket&service=".urlencode($thisService);
+   $casGet = "$cas_url/serviceValidate?ticket=$ticket&service=".urlencode($server_url."/vistaLogin.php");
  
    // See the PHP docs for warnings about using this method:
    // http://us3.php.net/manual/en/function.file-get-contents.php

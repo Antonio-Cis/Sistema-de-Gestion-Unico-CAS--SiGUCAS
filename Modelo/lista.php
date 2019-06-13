@@ -5,7 +5,7 @@ $usuario = $_SESSION['usuario'];
 $password = $_SESSION['password'];
 $seleccion = $_GET['tipo'];
 
-	require_once('../Modelo/config.php');
+	require_once('config.php');
 
 	$conectar = ldap_connect("ldap://{$host}:{$port}") or die("No se puede conectar al servidor LDAP");
 	ldap_set_option($conectar, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -15,9 +15,9 @@ $seleccion = $_GET['tipo'];
 	if(!empty($_REQUEST['search']['value'])){
 	$bu = $_REQUEST['search']['value'];
 
-	$filtroa = $filtro;
-	$filtro = ("givenname=$bu*");
-	$filtro1 = ("sn=$bu*");
+	//$filtro = ("givenname=$bu*");
+	//$filtro1 = ("sn=$bu*");
+	$filtro = "(|(uid=$bu*)(cn=$bu*)(sn=$bu*)(eduPersonTargetedID=$bu))";
 
 	}else{
 			$filtro = "uid=*";
@@ -92,7 +92,7 @@ if($seleccion=="estudiantes"){
 	}
 }
 
-$json_data = array('draw' => (isset($_REQUEST["draw"]) ? $_REQUEST["draw"] : 0), 'recordsTotal' =>  count($entrada), 'recordsFiltered' =>   count($entrada), 'tipo' =>   $seleccion, 'data' =>  $datos );
+$json_data = array('draw' => (isset($_REQUEST["draw"]) ? $_REQUEST["draw"] : 0), 'recordsTotal' =>  count($entrada) -1, 'recordsFiltered' =>   count($entrada) -1, 'tipo' =>   $seleccion, 'data' =>  $datos );
 echo  json_encode($json_data);
 
 ?>

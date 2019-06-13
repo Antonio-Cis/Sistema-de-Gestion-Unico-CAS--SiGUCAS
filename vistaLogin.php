@@ -1,18 +1,32 @@
 <?php
 session_start();
-$usuario = $_SESSION['usuario'];
-$pasword = $_SESSION['pasword'];
-$correo = $_SESSION['correo'];
+@$usuario = $_SESSION['usuario'];
+@$pasword = $_SESSION['pasword'];
+@$correo = $_SESSION['correo'];
 
-require_once('Modelo/config.php');
 require_once('Modelo/login_cas.php');
 
+
+
+function html_init_js(){
+    global $server_url;
+    $texto =
+    "<script type='text/javascript'>;
+        var server_url='".$server_url."';
+    </script>
+    <script src='Controlador/js/funciones.js'></script>";
+    return $texto;
+}
+
+echo html_init_js();
+
+
 if (isset($usuario) && empty($correo)) {
-    header("Location: $server_url" . "Vista/indexusuario.php");
+    header("Location: $server_url" . "/Vista/indexusuario.php");
     exit();
 } else {
     if (isset($usuario) && isset($correo)) {
-        header("Location: $server_url" . "Vista/perfilUsuario.php");
+        header("Location: $server_url" . "/Vista/perfilUsuario.php");
         exit();
     }
 }
@@ -23,7 +37,7 @@ if (isset($usuario) && empty($correo)) {
 <html lang="en">
     <head>
 
-        <title>< Inicio de sesión SAC</title>
+        <title>Inicio de sesión Administrador SAC</title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">

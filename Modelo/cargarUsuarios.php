@@ -11,7 +11,7 @@ ldap_set_option($conectar, LDAP_OPT_PROTOCOL_VERSION, 3);
     $target_path = $_SERVER['DOCUMENT_ROOT'];
     $rutat = $_FILES['csv']['tmp_name'];
     $nombret = $_FILES['csv']['name'];
-    $uploads_dir = '/sacfinals/Modelo/UsuariosCargados';
+    $uploads_dir = '/SiGUCAS/Modelo/UsuariosCargados';
     move_uploaded_file($rutat, "$target_path$uploads_dir/$nombret");
     $dir = $target_path.$uploads_dir."/".$nombret;
     echo $dir;
@@ -45,13 +45,24 @@ ldap_set_option($conectar, LDAP_OPT_PROTOCOL_VERSION, 3);
 
         if($valorU == 0){
                             $nombres = $datos[1];
+			    $nombreSep = explode(" ", $nombres);
+			    @$nombre1 = $nombreSep[0];
+			    @$nombre2 = $nombreSep[1];
                             $apellidos = $datos[2];
+			    $apellidoSep = explode(" ", $apellidos);
+			    @$apellido1 = $apellidoSep[0];
+			    @$apellido2 = $apellidoSep[1];
                             $telefono = $datos[4];
                             $tipoU = $datos[5];
+			    @$letra1 = lcfirst($nombre1);
+			    @$letra2 = lcfirst($nombre2[0]);
+			    @$letra3 = lcfirst($apellido1);
+			    @$letra4 = lcfirst($apellido2[0]); 
+
+			    @$uid = $letra1.".".$letra3;
+			    @$uid2 = $letra1.".".$letra2.".".$letra3;
+			    @$uid3 = $letra1.".".$letra2.".".$letra3.".".$letra4;
                             $correo = $datos[3];
-                            @$uid = $datos[3];
-                            @$uid2 = $datos[3];
-                            @$uid3 = $datos[3];
                             $hashFormat = "$2y$10$";
                             $salt = "cas&ySiGUCAS&LdapCas22";
                             $key = $hashFormat.$salt;

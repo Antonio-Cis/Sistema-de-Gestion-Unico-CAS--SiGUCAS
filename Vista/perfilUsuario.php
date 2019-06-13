@@ -2,12 +2,12 @@
 require_once('../Modelo/config.php');
 require_once('../Modelo/funciones_interfaz.php');
 session_start();
-$usuario = $_SESSION['usuario'];
-$nombre = $_SESSION['nombre'];
-$pasword = $_SESSION['pasword'];
-$apellido = $_SESSION['apellido'];
-$correo = $_SESSION['correo'];
-$cedula = $_SESSION['cedula'];
+@$usuario = $_SESSION['usuario'];
+@$nombre = $_SESSION['nombre'];
+@$pasword = $_SESSION['pasword'];
+@$apellido = $_SESSION['apellido'];
+@$correo = $_SESSION['correo'];
+@$cedula = $_SESSION['cedula'];
 
 if (empty($usuario)) {
     header("Location: $server_url");
@@ -23,7 +23,7 @@ if (empty($usuario)) {
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title><?php echo $site_alias; ?> - Perfil de Usuario</title>
+        <title>Perfil de Usuario</title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -37,13 +37,11 @@ if (empty($usuario)) {
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <!-- Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
         <link rel="stylesheet" type="text/css" href="css/alertify.css">
         <link rel="stylesheet" type="text/css" href="css/themes/default.css">
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
         <link rel="stylesheet" type="text/css" href="css/login.css?v=1.3">           
     </head>
     <body>
@@ -108,17 +106,19 @@ if (empty($usuario)) {
                             </div>
                         </form>
                         <br>
+<div id="cargando" style="display:none; color:green;"><center>Cargando...</center></div>
 
                         <button type="button" class="btn btn-primary btn-block" id="actualizar_contra">Actualizar contraseña</button>                        
                     </div>
                 </div>
             </section>
         </div>
-        <!-- <script type="text/javascript">
+        <script type="text/javascript">
             $(function () {
                 var form = $('#frmPassword').validate();
             });
-        </script> -->
+        </script>
+
     </body>
 <div class="limiter-footer">
             <center>

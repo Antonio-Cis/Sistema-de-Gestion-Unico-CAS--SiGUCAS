@@ -62,17 +62,23 @@ $baseGeneral2 = "ou=universidad_implementacion,dc=unl,dc=edu,dc=ec";
 $baseAcademicos = "ou=academicos,"."".$baseGeneral;
 $baseAdministrativos = "ou=administrativos,"."".$baseGeneral;
 
-$hashFormat = "$2y$10$";
+/*$hashFormat = "$2y$10$";
 $salt = "cas&ySiGUCAS&LdapCas22";
 $key = $hashFormat.$salt;
 $contra = hash_hmac('sha256', $cedula, $key, false);
+*/
 
 $conectar = ldap_connect("ldap://{$host}:{$port}") or die("No se puede conectar al servidor LDAP");
 ldap_set_option($conectar, LDAP_OPT_PROTOCOL_VERSION, 3);
 
-    @$uid = $correo;
-    @$uid2 = $correo;
-    @$uid3 = $correo;
+    @$letra1 = lcfirst($nombre1);
+    @$letra2 = lcfirst($nombre2[0]);
+    @$letra3 = lcfirst($apellido1);
+    @$letra4 = lcfirst($apellido2[0]); 
+
+    @$uid = $letra1.".".$letra3;
+    @$uid2 = $letra1.".".$letra2.".".$letra3;
+    @$uid3 = $letra1.".".$letra2.".".$letra3.".".$letra4;
     if($conectar) {
         if(@ldap_bind($conectar, "cn={$user_name},{$baseAdmin}", $password)) {
             $filtro = "eduPersonTargetedID=$cedula";
@@ -92,7 +98,7 @@ ldap_set_option($conectar, LDAP_OPT_PROTOCOL_VERSION, 3);
                 $info["telephoneNumber"][0] = "$telefono";
                 $info["ou"][0] = "$tipoU";
                 $info['eduPersonTargetedID'][0] = "$cedula";
-                $info["eduPersonPrincipalName"][0] = "$correo";
+                $info["eduPersonPrincipalName"][0] = "$uid";
                 $info["mail"][0] = "$correo";
 
                 $academico = "ou=$tipoU,"."".$baseAcademicos;
@@ -107,7 +113,7 @@ ldap_set_option($conectar, LDAP_OPT_PROTOCOL_VERSION, 3);
 
                 if($tipoU == 'estudiantes' or $tipoU == 'docentes'){
                     if(@ldap_add($conectar, "uid={$uid},{$academico}" , $info)){
-                        correo_crear($destino ,$uid , $cedula);
+                        //correo_crear($destino ,$uid , $cedula);
                     	$token = 4;
                     }else{
                         if(@ldap_add($conectar, "uid={$uid2},{$academico}" , $info)){
@@ -123,7 +129,7 @@ ldap_set_option($conectar, LDAP_OPT_PROTOCOL_VERSION, 3);
                 }else{
                 	if($tipoU == 'servidores' or $tipoU == 'trabajadores'){
                         if(@ldap_add($conectar, "uid={$uid},{$administrativo}" , $info)){
-                          correo_crear($destino ,$uid , $cedula);
+                          //correo_crear($destino ,$uid , $cedula);
         					$token = 4;
                         }else{
                             if(@ldap_add($conectar, "uid={$uid2},{$administrativo}" , $info)){
@@ -163,7 +169,7 @@ ldap_set_option($conectar, LDAP_OPT_PROTOCOL_VERSION, 3);
     	$token = 2;
     }
 
-    return json_encode(array("token" => $token,"status" => $uid));
+    return json_encode(array("token" => $token,"status" => $uid,"DNI" => $cedula,"destino" => $correo,"nombre"=> $nombre1, "apellido"=> $apellido1));
 
 }
 
@@ -179,6 +185,7 @@ function actualizar($datos,$servidor,$puerto,$baseAdmin){
   $correo = $datos[9];
   $tipoU = $datos[8];
   $contrasena = $datos[10];
+	$user = $datos[11];
   $host =$servidor;
   $port = $puerto;
 
@@ -201,11 +208,11 @@ function actualizar($datos,$servidor,$puerto,$baseAdmin){
       $academico = "ou=".$tipoU.",".$baseAcademicos;
       $administrativos = "ou=".$tipoU.",".$baseAdministrativos;
       $otro = $baseOtros;
-      $uid = $correo;
+      $uid = $user;
 
       if($conectar){
           if(@ldap_bind($conectar, "cn={$user_name},{$baseAdmin}", $password)){
-              $filtro = "uid=$correo";
+              $filtro = "uid=$user";
               $arreglo = array("userPassword", "ou");
               $resultadoU = @ldap_search($conectar, $baseGeneral, $filtro, $arreglo);
               $entradaA = ldap_get_entries($conectar, $resultadoU);
@@ -235,7 +242,7 @@ function actualizar($datos,$servidor,$puerto,$baseAdmin){
                   $info["telephoneNumber"][0] = "$telefono";
                   $info["ou"][0] = "$ou";
                   $info["eduPersonTargetedID"][0] = "$cedula";
-                  $info["eduPersonPrincipalName"][0] = "$correo";
+                  $info["eduPersonPrincipalName"][0] = "$user";
                   $info["mail"][0] = "$correo";
                   if($tipoU == 'estudiantes' or $tipoU == 'docentes'){
                       if(@ldap_mod_replace($conectar, "uid={$uid},{$academico}" , $info)){
@@ -271,7 +278,7 @@ function actualizar($datos,$servidor,$puerto,$baseAdmin){
                       $info["telephoneNumber"][0] = "$telefono";
                       $info["ou"][0] = "$tipoU";
                       $info["eduPersonTargetedID"][0] = "$cedula";
-                      $info["eduPersonPrincipalName"][0] = "$correo";
+                      $info["eduPersonPrincipalName"][0] = "$user";
                       $info["mail"][0] = "$correo";
                       if($ou == 'estudiantes' or $ou == 'docentes'){
                           $baseAcademicosE = "uid=$uid,ou=$ou,ou=academicos,"."".$baseGeneral;
